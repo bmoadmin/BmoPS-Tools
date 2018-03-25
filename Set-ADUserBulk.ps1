@@ -1,10 +1,11 @@
 <#
-#  Author : Brandon Morgan
-#  Purpose: To mass update user emails by uploading a CSV file and
-#           comparing it to current users. This requires the ActiveDirectory
-#           Powershell module. 
-#  Notes  : Right now the server name is specified for a specific problem at EA.
-#           in the future it may be a mandatory parameter to prevent errors.
+#  Author  : BMO
+#  Purpose : To mass update user emails by uploading a CSV file and
+#            comparing it to current users. This requires the ActiveDirectory
+#            Powershell module. 
+#  Notes   : Right now the server name is specified for a specific problem at EA.
+#            in the future it may be a mandatory parameter to prevent errors.
+#  Updated : 3/24/18
 #>
 <#
     .SYNOPSIS
