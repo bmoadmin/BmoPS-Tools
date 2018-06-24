@@ -3,9 +3,8 @@
 #  Purpose : This script was developed to meet the needs of an increasingly complex
 #            environment with dozens of GPOs and hundreds of group, user, and computer objects.
 #            While the group policy results wizard is great I found that I needed a way to 
-             search which GPO's were being filtered through a specific security group across
-			 the entire domain forest.
-#            quickly search through which
+#            search which GPO's were being filtered through a specific security group across
+#	     the entire domain forest.
 #  Created : 6/23/2018		 
 #  Updated : 6/24/2018
 #>
@@ -14,7 +13,7 @@
     .SYNOPSIS
       Search-GPO is 
     .EXAMPLE
-      Set-ADUserBulk .\example.csv
+      Search-Gpo.ps1 -DomainName companydomain.local -SecurityGroup "Sales Users"
 #>
 
 # Pass the name of the security group to the script as an argument
