@@ -22,7 +22,7 @@ Param
 (
     [Parameter(ValueFromRemainingArguments=$true, Position = 0)]
     [string] $DomainName,
-	[string] $SecurityGroup
+    [string] $SecurityGroup
 )
 
 # The cmdlets used require you run from an elevated PS session, this tests if that's true and if not the script will exit.
@@ -44,17 +44,17 @@ $gpos = Get-GPO -All -Domain $DomainName
 
 # Check if the security group specified is a member of any other groups that may have GPOs applying to them as well
 $ParentSecurityGroups = Get-ADGroup -Identity $SecurityGroup -Properties MemberOf | Select -ExpandProperty MemberOf | `
-    Get-ADGroup | Select -ExpandProperty Name
+Get-ADGroup | Select -ExpandProperty Name
 
 Write-Host "GPOs with direct security filtering"
 Write-Host 
 ForEach($gpo in $gpos)
 {
     $secinfo = $gpo.GetSecurityInfo() | Where ` 
-	{ 
-	    $_.Permission -eq "GpoApply" 
+    { 
+        $_.Permission -eq "GpoApply" 
     }
-	
+
     ForEach($sec in $secinfo)
     {
         if ($sec.Trustee.Name -eq $SecurityGroup)
@@ -70,18 +70,18 @@ Write-Host
 ForEach($gpo in $gpos)
 {
     ForEach($group in $ParentSecuityGroup)
-	{
+    {
         $secinfo = $gpo.GetSecurityInfo() | Where `
-	    {
-	        $_.Permission [eq "GpoApply"
-	    }
+	{
+	    $_.Permission [eq "GpoApply"
+	}
 		
-		ForEach($sec in $secinfo)
+	ForEach($sec in $secinfo)
+	{
+		if($sec.Trustee.Name -eq $group)
 		{
-		    if($sec.Trustee.Name -eq $group)
-			{
-			    Out-Default -InputObject $gpo
-			}
+			Out-Default -InputObject $gpo
 		}
 	}
+    }
 } 
