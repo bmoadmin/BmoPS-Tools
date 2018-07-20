@@ -73,7 +73,7 @@ ForEach($gpo in $gpos)
     {
         $secinfo = $gpo.GetSecurityInfo() | Where `
 	{
-	    $_.Permission [eq "GpoApply"
+	    $_.Permission -eq "GpoApply"
 	}
 		
 	ForEach($sec in $secinfo)
