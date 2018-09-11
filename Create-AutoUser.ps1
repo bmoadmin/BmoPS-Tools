@@ -9,14 +9,16 @@
 
 <#
     .SYNOPSIS
-      Create-AutoUser
+      Create-AutoUser.ps1
     .EXAMPLE
-      .\Create-AutoUser.ps1
+      .\Create-AutoUser.ps1 -FirstName John -LastName Smith -TemplateUser jdoe
 #>
 
-# required modules to run the cmdlets in the script
+# Required modules to run the cmdlets in the script
 Import-Module ActiveDirectory
 
+# Parameters to be passed to the script
+[CmdletBinding()]
 Param
 (
     [Parameter(Mandatory=$True)]$FirstName,
@@ -24,6 +26,18 @@ Param
     [Parameter(Mandatory=$True)]$TemplateUser
 )
 
+# Check to confirm this script is being run by an admin in an elevated powershell prompt or else exit. Cmdlets needed to create users
+# will not succeed otherwise. 
+$identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+$principal = [System.Security.Principal.WindowsPrincipal] $identity
+$role = [System.Security.Principal.WindowsBuiltInRole] "Administrator"
+
+if(-not $principal.IsInRole($role))
+{
+    throw "This script requires elevated permissions, please confirm youre running from an elevated powershell prompt as an administrator"
+}
+
+######### VARIABLES ##########
 $displayname = "$FirstName $LastName"
 $samaccountname = "$($FirstName[0])$LastName"
 $temppassword = ConvertTo-SecureString -String "ABcd1234*" -AsPlainText -Force
