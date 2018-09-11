@@ -38,12 +38,19 @@ if(-not $principal.IsInRole($role))
 }
 
 ######### VARIABLES ##########
-$displayname = "$FirstName $LastName"
+$display_name = "$FirstName $LastName"
 $samaccountname = "$($FirstName[0])$LastName"
-$temppassword = ConvertTo-SecureString -String "ABcd1234*" -AsPlainText -Force
+$temp_password = ConvertTo-SecureString -String "ABcd1234*" -AsPlainText -Force
 $template = Get-ADUser -Identity $TemplateUser
 
-New-ADUser -Name $samaccountname -NewPassword $temppassword
+$final_check = @{
+    "ldap"=$samaccountname
+    "parentou"=(($template).distinguishedname -replace '^.+?,(CN|OU.+)','$1')
+}
+
+Write-Host "Are you sure you want to create user $final_check.ldap in $final_check.parentou ?"
+
+# New-ADUser -Name $samaccountname -NewPassword $temppassword
 
 
 
