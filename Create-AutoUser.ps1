@@ -14,6 +14,8 @@
       .\Create-AutoUser.ps1
 #>
 
+# required modules to run the cmdlets in the script
+Import-Module ActiveDirectory
 
 Param
 (
