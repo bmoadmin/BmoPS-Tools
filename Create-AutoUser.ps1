@@ -10,7 +10,7 @@
 
 <#
     .SYNOPSIS
-      Create-AutoUser.ps1
+      Create-AutoUser.ps1 is a script intended to automate a large portion of the new user creation process
     .EXAMPLE
       .\Create-AutoUser.ps1 -FirstName John -LastName Smith -TemplateUser jdoe
 #>
@@ -48,16 +48,22 @@ $get_ad_groups = Get-ADPrincipalGroupMembership -Identity $TemplateUser | Select
 
 ########### MAIN ############
 
-$final_check = @{
+$final_check = [ordered]@{
     "Name"=$display_name
-    "ldap"=$samaccountname
-    "parentou"=(($template).distinguishedname -replace '^.+?,(CN|OU.+)','$1')
-    "adgroups"=$get_ad_groups
+    "LDAP"=$samaccountname
+    "Parent OU"=(($template).distinguishedname -replace '^.+?,(CN|OU.+)','$1')
+    "AD Groups"=$get_ad_groups
 }
 
 Write-Host "Are you sure you want to create a new user with the following properties?"
 Write-Host $null
-$hash.Keys | % { " $_ => " + $hash.Item($_) }
+
+$final_check.Keys | ` 
+    ForEach 
+    {   
+        " $_ => " + $final_check.Item($_) 
+    }
+
 Write-Host $null
 
 $accept_user = Read-Host "Is this correct [y/n]?"
