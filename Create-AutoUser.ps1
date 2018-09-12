@@ -39,11 +39,14 @@ if(-not $principal.IsInRole($role))
 Import-Module ActiveDirectory
 
 ######### VARIABLES ##########
+
 $display_name = "$FirstName $LastName"
 $samaccountname = "$($FirstName[0])$LastName"
 $temp_password = ConvertTo-SecureString -String "ABcd1234*" -AsPlainText -Force
 $template = Get-ADUser -Identity $TemplateUser
 $get_ad_groups = Get-ADPrincipalGroupMembership -Identity $TemplateUser | Select -ExpandProperty name
+
+########### MAIN ############
 
 $final_check = @{
     "Name"=$display_name
@@ -59,7 +62,17 @@ Write-Host $null
 
 $accept_user = Read-Host "Is this correct [y/n]?"
 
-# New-ADUser -Name $samaccountname -NewPassword $temppassword
-
-
+# If yes create the new user, if no say something and exit, else send invalid answer to stderr and die
+if ($accept_user -eq "y") 
+{
+    # New-ADUser -Name $samaccountname -NewPassword $temppassword
+}
+elseif ($accept_user -eq "n")
+{
+    throw "No action taken, exiting script"
+}
+else
+{
+    throw "Invalid selection, please rerun script"
+}
 
