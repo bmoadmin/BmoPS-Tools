@@ -4,7 +4,8 @@
 #  Purpose : To automate a user creation process that's become increasingly time consuming
 #            as more and more departments, users, and applications are added to a large
 #            network. 
-#  Created : September 11, 2018		 
+#  Created : September 11, 2018
+#  Updated : September 12, 2018		 
 #>
 
 <#
@@ -45,19 +46,18 @@ $template = Get-ADUser -Identity $TemplateUser
 $get_ad_groups = Get-ADPrincipalGroupMembership -Identity $TemplateUser | Select -ExpandProperty name
 
 $final_check = @{
+    "Name"=$display_name
     "ldap"=$samaccountname
     "parentou"=(($template).distinguishedname -replace '^.+?,(CN|OU.+)','$1')
+    "adgroups"=$get_ad_groups
 }
 
 Write-Host "Are you sure you want to create a new user with the following properties?"
 Write-Host $null
-Write-Host "Name = $FirstName $LastName"
-Write-Host "LDAP = $($final_check.ldap)"
-Write-Host "Parent OU = $($final_check.parentou)"
+$hash.Keys | % { " $_ => " + $hash.Item($_) }
 Write-Host $null
-Write-Host "Security Group Membership =>"
-$get_ad_groups
-Write-Host $null
+
+$accept_user = Read-Host "Is this correct [y/n]?"
 
 # New-ADUser -Name $samaccountname -NewPassword $temppassword
 
