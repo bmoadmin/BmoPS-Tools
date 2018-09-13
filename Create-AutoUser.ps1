@@ -58,9 +58,7 @@ $final_check = [ordered]@{
 Write-Host "Are you sure you want to create a new user with the following properties?"
 Write-Host $null
 
-$final_check.Keys | ` 
-    ForEach 
-    {   
+$final_check.Keys | ForEach {   
         " $_ => " + $final_check.Item($_) 
     }
 
@@ -71,7 +69,9 @@ $accept_user = Read-Host "Is this correct [y/n]?"
 # If yes create the new user, if no say something and exit, else send invalid answer to stderr and die
 if ($accept_user -eq "y") 
 {
-    # New-ADUser -Name $samaccountname -NewPassword $temppassword
+    # Turns out the template does not set OU which will need to be pulled from $final_check.(Parent OU)
+    New-ADUser -Name $display_name -DisplayName $display_name -SamAccountName $samaccountname `
+    -AccountPassword $temp_password -Instance $template
 }
 elseif ($accept_user -eq "n")
 {
