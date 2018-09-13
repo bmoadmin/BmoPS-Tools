@@ -57,8 +57,33 @@ $upn_name = $samaccountname + "@" + $DomainName
 $temp_password = ConvertTo-SecureString -String "ABcd1234*" -AsPlainText -Force
 $template = Get-ADUser -Identity $TemplateUser
 $get_ad_groups = Get-ADPrincipalGroupMembership -Identity $TemplateUser | Select -ExpandProperty name
+$i=0
 
 ########### MAIN ############
+
+While($i -lt $FirstName.Length)
+{
+    if(Get-ADUser $samaccountname)
+    {
+        Write-Host "It looks like the ldap $samaccountname already exists"
+        $samaccountname = "$(($FirstName).Substring(0,$i))$LastName"
+    }
+    
+   $accept_new_name = Read-Host "Is $samaccountname okay instead? [y/n]?"
+    if($accept_new_name -eq "y")
+    {
+        $upn_name = "$samaccountname + "@" + $DomainName"
+        $i = $i + $FirstName.Length + 1
+    }
+    elseif($accept_new_name -eq "n")
+    {
+        $i = $i + 1
+    }
+    else
+    {
+        Throw "Unrecognized response, exiting program"
+    }
+}
 
 $final_check = [ordered]@{
     "Name"=$display_name
@@ -81,8 +106,8 @@ $accept_user = Read-Host "Is this correct [y/n]?"
 # If yes create the new user, if no say something and exit, else send invalid answer to stderr and die
 if ($accept_user -eq "y") 
 {
-    New-ADUser -Name $display_name -GivenName $FirstName -Surename $LastName -DisplayName $display_name -SamAccountName $samaccountname `
-    -AccountPassword $temp_password -UserPrincipalName $upn_name
+    New-ADUser -Name $display_name -GivenName $FirstName -Surname $LastName -DisplayName $display_name -SamAccountName $samaccountname `
+    -AccountPassword $temp_password -UserPrincipalName $upn_name -Path $final_check.("Parent OU") -Enabled $True
 
     ForEach($group in $get_ad_groups)
     {
