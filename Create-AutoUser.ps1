@@ -21,6 +21,7 @@ Param
 (
     [Parameter(Mandatory=$True)]$FirstName,
     [Parameter(Mandatory=$True)]$LastName,
+    [Parameter(Mandatory=$True)]$DomainName,
     [Parameter(Mandatory=$True)]$TemplateUser
 )
 
@@ -42,6 +43,7 @@ Import-Module ActiveDirectory
 
 $display_name = "$FirstName $LastName"
 $samaccountname = "$($FirstName[0])$LastName"
+$upn_name = $samaccountname + "@" + $DomainName
 $temp_password = ConvertTo-SecureString -String "ABcd1234*" -AsPlainText -Force
 $template = Get-ADUser -Identity $TemplateUser
 $get_ad_groups = Get-ADPrincipalGroupMembership -Identity $TemplateUser | Select -ExpandProperty name
@@ -69,9 +71,14 @@ $accept_user = Read-Host "Is this correct [y/n]?"
 # If yes create the new user, if no say something and exit, else send invalid answer to stderr and die
 if ($accept_user -eq "y") 
 {
-    # Turns out the template does not set OU which will need to be pulled from $final_check.(Parent OU)
-    New-ADUser -Name $display_name -DisplayName $display_name -SamAccountName $samaccountname `
-    -AccountPassword $temp_password -Instance $template
+    #Turns out the template does not set OU which will need to be pulled from $final_check.(Parent OU)
+    New-ADUser -Name $display_name -GivenName $FirstName -Surename $LastName -DisplayName $display_name -SamAccountName $samaccountname `
+    -AccountPassword $temp_password -UserPrincipalName $upn_name
+
+    ForEach($group in $get_ad_groups)
+    {
+        Add-ADGroupMember -Identity $group -Members $samaccountname
+    }
 }
 elseif ($accept_user -eq "n")
 {
