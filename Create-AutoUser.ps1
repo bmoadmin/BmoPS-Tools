@@ -29,10 +29,13 @@
 [CmdletBinding()]
 Param
 (
-    [Parameter(Mandatory=$True)]$FirstName,
-    [Parameter(Mandatory=$True)]$LastName,
-    [Parameter(Mandatory=$True)]$DomainName,
-    [Parameter(Mandatory=$True)]$TemplateUser
+    [Parameter(
+        Mandatory=$True
+    )]
+    [string]$FirstName,
+    [string]$LastName,
+    [string]$DomainName,
+    [string]$TemplateUser
 )
 
 # Check to confirm this script is being run by an admin in an elevated powershell prompt or else exit. Cmdlets needed to create users
