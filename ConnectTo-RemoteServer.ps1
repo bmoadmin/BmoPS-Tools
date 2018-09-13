@@ -3,6 +3,7 @@
 #  Purpose : Utilize a single script to log into a variety of remote servers and load the proper powershell modules
 #            for that server based on its role.
 #  Created : September 12, 2018
+#  Updated : September 13, 2018
 #>
 
 <#
@@ -16,23 +17,40 @@
 [CmdletBinding(DefaultParameterSetName="Hostname")]
 Param
 (
-    [Parameter(Mandatory=$True, ParameterSetName="Hostname")]
-    [string]$Hostname
-    [Parameter(Mandatory=$True, ParameterSetName="DC")]
+    [Parameter(
+        Mandatory=$True, 
+        ParameterSetName="Hostname"
+    )]
+    [string]$Hostname,
+    [Parameter(
+        Mandatory=$True, 
+        Position = 0, 
+        ParameterSetName="ServerType"
+    )]
     [switch]$DomainController,
-    [Parameter(Mandatory=$True, ParameterSetName="Exchange")]
     [switch]$Exchange,
-    [Parameter(Mandatory=$True, ParameterSetName="O365")]
     [switch]$Office365
 )
 
 $user_credential = Get-Credential
 
-$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://gcexchange.countyofglenn.local/PowerShell -Credential $UserCredential -Authentication Kerberos
-
-Import-Session $Session
-
-
-
+if($Exchange)
+{
+    $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://$Hostname/PowerShell `
+    -Credential $UserCredential -Authentication Kerberos
+    Import-Session $Session
+}
+elseif($DomainController)
+{
+    Import-Session $Session
+}
+elseif($Office365)
+{
+    Import-Session $Session
+}
+else
+{
+    Throw "No remote server type was specified, please rerun script and specify a server type."
+} 
 
 
