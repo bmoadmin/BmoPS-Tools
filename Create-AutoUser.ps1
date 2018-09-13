@@ -5,15 +5,25 @@
 #            as more and more departments, users, and applications are added to a large
 #            network. 
 #  Created : September 11, 2018
-#  Updated : September 12, 2018		 
+#  Updated : September 13, 2018		 
 #>
 
 <#
     .SYNOPSIS
       Create-AutoUser.ps1 is a script intended to automate a large portion of the new user creation process
     .EXAMPLE
-      .\Create-AutoUser.ps1 -FirstName John -LastName Smith -TemplateUser jdoe
+      .\Create-AutoUser.ps1 -FirstName John -LastName Smith -DomainName bigcompany.local -TemplateUser jdoe
 #>
+
+<###############################
+
+    Functionality currently missing from script:
+        1) Error checking to confirm the ldap is not already taken in the database and subsequent suggestions
+           for corrective measures
+        2) Placing the new user in the same OU as the template user
+        3) Creating a mailbox for the user by connecting to onprem exchange or o365
+
+################################>
 
 # Parameters to be passed to the script
 [CmdletBinding()]
@@ -71,7 +81,6 @@ $accept_user = Read-Host "Is this correct [y/n]?"
 # If yes create the new user, if no say something and exit, else send invalid answer to stderr and die
 if ($accept_user -eq "y") 
 {
-    #Turns out the template does not set OU which will need to be pulled from $final_check.(Parent OU)
     New-ADUser -Name $display_name -GivenName $FirstName -Surename $LastName -DisplayName $display_name -SamAccountName $samaccountname `
     -AccountPassword $temp_password -UserPrincipalName $upn_name
 
