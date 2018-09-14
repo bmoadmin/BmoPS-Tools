@@ -8,45 +8,52 @@
 
 <#
     .SYNOPSIS
-      ConnectTo-RemoteServer.ps1
-    .EXAMPLE
-      .\ConnectTo-RemoteServer.ps1 -DomainController -Hostname exchange.company.local
+    Utilize a single script to log into a variety of remote powershell sessions.
+    .DESCRIPTION
+    By passing the kind of remote powershell session you'll connect to this script will automatically choose the needed syntax to sign in.
+    .SYNTAX
+    ./ConnectTo-RemoteServer.ps1 -DomainController -Hostname exchange.company.local
+    ./ConnectTo-RemoteServer.ps1 -Office365 -Hostname outlook.office365.com
 #>
 
 # Parameters to be passed to the script
-[CmdletBinding(DefaultParameterSetName="Hostname")]
+[CmdletBinding()]
+# DefaultParameterSetName="Hostname")]
 Param
 (
     [Parameter(
-        Mandatory=$True, 
-        ParameterSetName="Hostname"
+        Mandatory=$True 
+       # ParameterSetName="Hostname"
     )]
     [string]$Hostname,
     [Parameter(
-        Mandatory=$True, 
-        Position = 0, 
-        ParameterSetName="ServerType"
+       # ParameterSetName="ServerType"
     )]
-    [switch]$DomainController,
+    # [switch]$DomainController,
     [switch]$Exchange,
     [switch]$Office365
 )
 
 $user_credential = Get-Credential
 
+
 if($Exchange)
 {
-    $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://$Hostname/PowerShell `
-    -Credential $UserCredential -Authentication Kerberos
-    Import-Session $Session
+    $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://$Hostname/PowerShell/ `
+    -Credential $user_credential -Authentication Kerberos
+    Import-PSSession $Session
 }
-elseif($DomainController)
+<#
+elseif($DomainController -ne $null)
 {
-    Import-Session $Session
+    Import-PSSession $Session
 }
+#>
 elseif($Office365)
 {
-    Import-Session $Session
+    $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://$Hostname/powershell-liveid/ `
+    -Credential $user_credential -Authentication Basic -AllowRedirection
+    Import-PSSession $Session -DisableNameChecking
 }
 else
 {
