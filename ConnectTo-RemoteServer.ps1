@@ -3,7 +3,7 @@
 #  Purpose : Utilize a single script to log into a variety of remote servers and load the proper powershell modules
 #            for that server based on its role.
 #  Created : September 12, 2018
-#  Updated : September 13, 2018
+#  Updated : September 14, 2018
 #>
 
 <#
@@ -12,7 +12,8 @@
     .DESCRIPTION
     By passing the kind of remote powershell session you'll connect to this script will automatically choose the needed syntax to sign in.
     .SYNTAX
-    ./ConnectTo-RemoteServer.ps1 -DomainController -Hostname exchange.company.local
+    ./ConnectTo-RemoteServer.ps1 -Exchange -Hostname exchange.company.local
+    ./ConnectTo-RemoteServer.ps1 -DomainController -hostname dc01.company.local
     ./ConnectTo-RemoteServer.ps1 -Office365 -Hostname outlook.office365.com
 #>
 
@@ -43,12 +44,12 @@ if($Exchange)
     -Credential $user_credential -Authentication Kerberos
     Import-PSSession $Session
 }
-<#
 elseif($DomainController -ne $null)
 {
-    Import-PSSession $Session
+    $Session = New-PSSession -ComputerName $Hostname -Credential $user_credential -Authentication Kerberos
+    Invoke-Command $Session -ScriptBlock { Import-Module ActiveDirectory,GroupPolicy }
+    Import-PSSession $Session -module ActiveDirectory,GroupPolicy
 }
-#>
 elseif($Office365)
 {
     $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://$Hostname/powershell-liveid/ `
