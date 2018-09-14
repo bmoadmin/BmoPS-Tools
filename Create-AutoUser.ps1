@@ -5,7 +5,7 @@
 #            as more and more departments, users, and applications are added to a large
 #            network. 
 #  Created : September 11, 2018
-#  Updated : September 13, 2018		 
+#  Updated : September 14, 2018		 
 #>
 
 <#
@@ -56,14 +56,15 @@ Import-Module ActiveDirectory
 
 $display_name = "$FirstName $LastName"
 $samaccountname = "$($FirstName[0])$LastName"
-$upn_name = $samaccountname + "@" + $DomainName
+$upn_name = "$samaccountname@$DomainName"
 $temp_password = ConvertTo-SecureString -String "ABcd1234*" -AsPlainText -Force
 $template = Get-ADUser -Identity $TemplateUser
 $get_ad_groups = Get-ADPrincipalGroupMembership -Identity $TemplateUser | Select -ExpandProperty name
-$i=0
+$i=1
 
 ########### MAIN ############
 
+# Check to confirm that the username is not already taken
 While($i -lt $FirstName.Length)
 {
     if(Get-ADUser $samaccountname)
@@ -72,10 +73,10 @@ While($i -lt $FirstName.Length)
         $samaccountname = "$(($FirstName).Substring(0,$i))$LastName"
     }
     
-   $accept_new_name = Read-Host "Is $samaccountname okay instead? [y/n]?"
+    $accept_new_name = Read-Host "Is $samaccountname okay instead? [y/n]?"
     if($accept_new_name -eq "y")
     {
-        $upn_name = "$samaccountname + "@" + $DomainName"
+        $upn_name = "$samaccountname@$DomainName"
         $i = $i + $FirstName.Length + 1
     }
     elseif($accept_new_name -eq "n")
