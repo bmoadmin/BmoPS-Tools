@@ -91,7 +91,8 @@ While($i -lt $FirstName.Length)
 
 $final_check = [ordered]@{
     "Name"=$display_name
-    "LDAP"=$samaccountname
+    "SamAccountName"=$samaccountname
+    "UPN"=$upn_name
     "Parent OU"=(($template).distinguishedname -replace '^.+?,(CN|OU.+)','$1')
     "AD Groups"=$get_ad_groups
 }
