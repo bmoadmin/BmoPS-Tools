@@ -71,21 +71,21 @@ While($i -lt $FirstName.Length)
     {
         Write-Host "It looks like the ldap $samaccountname already exists"
         $samaccountname = "$(($FirstName).Substring(0,$i))$LastName"
-    }
-    
-    $accept_new_name = Read-Host "Is $samaccountname okay instead? [y/n]?"
-    if($accept_new_name -eq "y")
-    {
-        $upn_name = "$samaccountname@$DomainName"
-        $i = $i + $FirstName.Length + 1
-    }
-    elseif($accept_new_name -eq "n")
-    {
-        $i = $i + 1
-    }
-    else
-    {
-        Throw "Unrecognized response, exiting program"
+
+        $accept_new_name = Read-Host "Is $samaccountname okay instead? [y/n]?"
+        if($accept_new_name -eq "y")
+        {
+            $upn_name = "$samaccountname@$DomainName"
+            $i = $i + $FirstName.Length + 1
+        }
+        elseif($accept_new_name -eq "n")
+        {
+            $i = $i + 1
+        }
+        else
+        {
+            Throw "Unrecognized response, exiting program"
+        }
     }
 }
 
