@@ -1,4 +1,3 @@
-#!/bin/pwsh
 <#
 #  Author  : BMO
 #  Purpose : To automate a user creation process that's become increasingly time consuming
