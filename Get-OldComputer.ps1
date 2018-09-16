@@ -11,23 +11,37 @@
     .EXAMPLE
 #>
 
+[CmdletBinding()]
+Param
+(
 
+)
 
+# Required module to run the cmdlets in the script
+Import-Module ActiveDirectory
 
 ########## Variables ############
+$daysback = "-30"
+$current_date = Get-Date
+$month_old = $current_date.AddDays($daysback)
+$current_date_string = Get-Date -DisplayHint Date | Out-String
+$all_computer_objects = Get-ADComputer -Filter * -Properties * | Select Name,LastLogonDate
 
-$Date = Get-Date -DisplayHint Date | Out-String
 
-
-
-
+<#
 $time_compare = [ordered]@{
-    "Day" = $Date | %{ $_.Split(' ')[2] -Replace',',''; }
-    "Month" = $Date | %{ $_.Split(' ')[1]; }
-    "Year" = $Date | %{ $_.Split(',')[2] -Replace' ',''; }
+    "Day" = $CurrentDateString | %{ $_.Split(' ')[2] -Replace',',''; }
+    "Month" = $CurrentDateString | %{ $_.Split(' ')[1]; }
+    "Year" = $CurrentDateString | %{ $_.Split(',')[2] -Replace' ',''; }
+}
+#>
+
+ForEach( $computer in $all_computer_objects) 
+{
+    if( $computer.LastLogonDate -lt $month_old )
+    {
+        Write-Output $computer.Name
+    }
 }
 
-Write-Host $null
-$time_compare.Keys | ForEach {
-    Write-Output $time_compare.Item($_)
-}
+
