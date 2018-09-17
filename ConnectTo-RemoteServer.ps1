@@ -36,6 +36,7 @@ Param
 )
 
 $user_credential = Get-Credential
+Invoke-ExecutionPolicy Unrestricted -Force
 
 
 if($Exchange)
