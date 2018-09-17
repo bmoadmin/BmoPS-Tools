@@ -40,23 +40,7 @@ ForEach( $user in $all_user_objects)
 {
     if( $user.LastLogonDate -lt $month_old )
     {
-        $user_hash = [ordered]@( 
-            @{ 
-                Exression={
-                   $user.Name
-                };
-                Label="Name"
-            },
-            @{
-                Expression={
-                    $user.LastLogonDate
-                },
-                Label="LastLogonDate"
-            },
-        )
+        Write-Host $user.Name $user.LastLogonDate
     }
-}
+} | Format-Table
 
-$user_hash.Keys | ForEach {
-        " $_ => " + $user_hash.Item($_)
-    }
