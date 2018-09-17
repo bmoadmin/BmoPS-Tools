@@ -22,6 +22,11 @@ $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent()
 $principal = [System.Security.Principal.WindowsPrincipal] $identity
 $role = [System.Security.Principal.WindowsBuiltInRole] "Administrator"
 
+if(-not $principal.IsInRole($role))
+{
+    throw "This script requires elevated permissions, please confirm youre running from an elevated powershell prompt as an administrator"
+}
+
 # Required module to run the cmdlets in the script
 Import-Module ActiveDirectory
 
@@ -29,14 +34,29 @@ Import-Module ActiveDirectory
 $daysback = "-30"
 $current_date = Get-Date
 $month_old = $current_date.AddDays($daysback)
-$all_user_objects = Get-ADUser -Filter * -Properties * 
+$all_user_objects = Get-ADUser -Filter * -Properties * | ?{ $_.Enabled -eq $True }  
 
 ForEach( $user in $all_user_objects) 
 {
     if( $user.LastLogonDate -lt $month_old )
     {
-        Write-Output $user.Name
+        $user_hash = [ordered]@( 
+            @{ 
+                Exression={
+                   $user.Name
+                };
+                Label="Name"
+            },
+            @{
+                Expression={
+                    $user.LastLogonDate
+                },
+                Label="LastLogonDate"
+            },
+        )
     }
 }
 
-
+$user_hash.Keys | ForEach {
+        " $_ => " + $user_hash.Item($_)
+    }
