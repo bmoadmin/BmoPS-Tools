@@ -4,6 +4,7 @@
 #            the Import-CSV cmdlet to compare a CSV file to the users in AD. 
 #            This requires the ActiveDirectory Powershell module. 
 #  Updated : 3/26/18
+#  Status  : Functional
 #>
 <#
     .SYNOPSIS
