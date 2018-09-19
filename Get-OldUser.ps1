@@ -37,11 +37,18 @@ $current_date = Get-Date
 $month_old = $current_date.AddDays($daysback)
 $all_user_objects = Get-ADUser -Filter * -Properties * | ?{ $_.Enabled -eq $True }  
 
+
 ForEach( $user in $all_user_objects) 
 {
     if( $user.LastLogonDate -lt $month_old )
     {
-        Write-Host $user.Name $user.LastLogonDate
+        $user_hash = @{
+            $user_hash.Name = $_.Name
+            $user_hash.LastLogonDate = $_.LastLogonDate
+        }
+        #Write-Host $user.Name $user.LastLogonDate
     }
-} | Format-Table
+} 
+
+$user_hash | Format-Table
 
