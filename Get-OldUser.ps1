@@ -38,17 +38,27 @@ $month_old = $current_date.AddDays($daysback)
 $all_user_objects = Get-ADUser -Filter * -Properties * | ?{ $_.Enabled -eq $True }  
 
 
-ForEach( $user in $all_user_objects) 
+$user_list_scrubbed = ForEach($user in $all_user_objects) 
 {
     if( $user.LastLogonDate -lt $month_old )
     {
-        $user_hash = @{
-            $user_hash.Name = $_.Name
-            $user_hash.LastLogonDate = $_.LastLogonDate
-        }
-        #Write-Host $user.Name $user.LastLogonDate
+        $user
     }
 } 
 
-$user_hash | Format-Table
+# Format the output into a nice readable table
+$user_list_scrubbed | Select-Output `
+    @{
+        Expression={
+            $_.Name
+        };
+        Label="Name"
+    },
+    @{
+        Expression={
+            $_.LastLogonDate
+        };
+        Label="Last Logon"
+    } | Format-Table
+
 
