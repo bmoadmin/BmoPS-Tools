@@ -2,13 +2,15 @@
 #  Author  : BMO
 #  Purpose : Find all users that havn't logged into the Domain in 30 or more days { that arn't disabled } 
 #  Created : September 17, 2018
-#  Status  : Unfinished
+#  Updated : September 19, 2018
+#  Status  : Functional
 #>
 
 <#
     .SYNOPSIS
       Get-OldUser.ps1 is a script to quickly audit a list of all users who have not signed into the domain in over 30 days.
     .EXAMPLE
+      .\Get-OldUser.ps1
 #>
 
 [CmdletBinding()]
