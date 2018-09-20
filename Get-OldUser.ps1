@@ -16,7 +16,8 @@
 [CmdletBinding()]
 Param
 (
-
+    [Parameter()]
+    [String]$ExportCSV
 )
 
 # Check to confirm this script is being run by an admin in an elevated powershell prompt or else exit. If run from a non-priviledged
@@ -38,6 +39,7 @@ $daysback = "-30"
 $current_date = Get-Date
 $month_old = $current_date.AddDays($daysback)
 $all_user_objects = Get-ADUser -Filter * -Properties * | ?{ $_.Enabled -eq $True }  
+$csv_path = $ExportCSV
 
 
 $user_list_scrubbed = ForEach($user in $all_user_objects) 
@@ -61,6 +63,18 @@ $user_list_scrubbed | Select-Output `
             $_.LastLogonDate
         };
         Label="Last Logon"
-    } | Format-Table
+    } | `
+        While 
+        {
+            if($ExportCSV -ne $null)
+            {
+               $_ | Format-Table | Export-CSV $csv_path
+            }
+            else
+            {
+                $_ | Format-Table
+            }
+        }
+        
 
 
