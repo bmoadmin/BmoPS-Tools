@@ -13,7 +13,9 @@
     .EXAMPLE
       ./Get-OldComputer.ps1
     .EXAMPLE
-      ./Get-OldComputer.ps1 -ExportCSV C:\Users\jdoe\Documents\user_export.csv
+      ./Get-OldComputer.ps1 -ExportCSV <path>
+    .EXAMPLE
+      ./Get-OldComputer.ps1 -ExportCSV C:\Users\jdoe\Documents\computer_export.csv
 #>
 
 [CmdletBinding()]
