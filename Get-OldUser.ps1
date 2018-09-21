@@ -11,6 +11,10 @@
       Get-OldUser.ps1 is a script to quickly audit a list of all users who have not signed into the domain in over 30 days.
     .EXAMPLE
       .\Get-OldUser.ps1
+    .EXAMPLE
+      .\Get-OldUser.ps1 -ExportCSV <path>
+    .EXAMPLE
+      .\Get-OldUser.ps1 -ExportCSV C:\Users\jdoe\Documents\user_export.csv
 #>
 
 [CmdletBinding()]
@@ -51,7 +55,7 @@ $user_list_scrubbed = ForEach($user in $all_user_objects)
 } 
 
 # Format the output into a nice readable table
-$user_paramcheck = $user_list_scrubbed | Select-Output `
+$user_paramcheck = $user_list_scrubbed | Select-Object `
     @{
         Expression={
             $_.Name
@@ -73,4 +77,3 @@ else
 {
     $user_paramcheck | Format-Table
 }
-        
