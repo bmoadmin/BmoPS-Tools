@@ -2,8 +2,8 @@
 #  Author  : BMO
 #  Purpose : Find all users that havn't logged into the Domain in 30 or more days { that arn't disabled } 
 #  Created : September 17, 2018
-#  Updated : September 19, 2018
-#  Status  : Functional
+#  Updated : September 21, 2018
+#  Status  : Finished
 #>
 
 <#
@@ -51,7 +51,7 @@ $user_list_scrubbed = ForEach($user in $all_user_objects)
 } 
 
 # Format the output into a nice readable table
-$user_list_scrubbed | Select-Output `
+$user_paramcheck = $user_list_scrubbed | Select-Output `
     @{
         Expression={
             $_.Name
@@ -63,18 +63,14 @@ $user_list_scrubbed | Select-Output `
             $_.LastLogonDate
         };
         Label="Last Logon"
-    } | `
-        While 
-        {
-            if($ExportCSV -ne $null)
-            {
-               $_ | Format-Table | Export-CSV $csv_path
-            }
-            else
-            {
-                $_ | Format-Table
-            }
-        }
+    } 
+
+if($ExportCSV -ne $null)
+{
+    $user_paramcheck | Export-CSV $csv_path
+}
+else
+{
+    $user_paramcheck | Format-Table
+}
         
-
-
