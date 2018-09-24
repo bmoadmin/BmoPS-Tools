@@ -47,7 +47,7 @@ if($Exchange)
 }
 elseif($DomainController -ne $null)
 {
-    Invoke-ExecutionPolicy Unrestricted -Force
+    Set-ExecutionPolicy Unrestricted -Force
     $Session = New-PSSession -ComputerName $Hostname -Credential $user_credential -Authentication Kerberos
     Invoke-Command $Session -ScriptBlock { Import-Module ActiveDirectory,GroupPolicy }
     Import-PSSession $Session -module ActiveDirectory,GroupPolicy
