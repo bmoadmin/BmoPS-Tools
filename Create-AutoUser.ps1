@@ -4,13 +4,15 @@
 #            as more and more departments, users, and applications are added to a large
 #            network. 
 #  Created : September 11, 2018
-#  Updated : September 14, 2018		 
-#  Status  : Unfinished
+#  Updated : September 25, 2018		 
+#  Status  : Functional
 #>
 
 <#
     .SYNOPSIS
       Create-AutoUser.ps1 is a script intended to automate a large portion of the new user creation process
+    .SYNTAX
+      .\Create-AutoUser.ps1 -FirstName <string> -LastName <string> -DomainName <string> -TremplateUser <string> -Password <string>
     .EXAMPLE
       .\Create-AutoUser.ps1 -FirstName John -LastName Smith -DomainName bigcompany.local -TemplateUser jdoe
 #>
@@ -35,7 +37,8 @@ Param
     [string]$FirstName,
     [string]$LastName,
     [string]$DomainName,
-    [string]$TemplateUser
+    [string]$TemplateUser,
+    [string]$Password
 )
 
 # Check to confirm this script is being run by an admin in an elevated powershell prompt or else exit. Cmdlets needed to create users
@@ -57,7 +60,7 @@ Import-Module ActiveDirectory
 $display_name = "$FirstName $LastName"
 $samaccountname = "$($FirstName[0])$LastName"
 $upn_name = "$samaccountname@$DomainName"
-$temp_password = ConvertTo-SecureString -String "ABcd1234*" -AsPlainText -Force
+$temp_password = ConvertTo-SecureString -String $Password -AsPlainText -Force
 $template = Get-ADUser -Identity $TemplateUser
 $get_ad_groups = Get-ADPrincipalGroupMembership -Identity $TemplateUser | Select -ExpandProperty name
 $i=1
