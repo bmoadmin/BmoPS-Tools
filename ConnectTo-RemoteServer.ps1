@@ -3,7 +3,7 @@
 #  Purpose : Utilize a single script to log into a variety of remote servers and load the proper powershell modules
 #            for that server based on its role.
 #  Created : September 12, 2018
-#  Updated : September 14, 2018
+#  Updated : September 28, 2018
 #  Status  : Functional
 #>
 
@@ -20,18 +20,15 @@
 
 # Parameters to be passed to the script
 [CmdletBinding()]
-# DefaultParameterSetName="Hostname")]
 Param
 (
     [Parameter(
         Mandatory=$True 
-       # ParameterSetName="Hostname"
     )]
     [string]$Hostname,
     [Parameter(
-       # ParameterSetName="ServerType"
     )]
-    # [switch]$DomainController,
+    [switch]$DomainController,
     [switch]$Exchange,
     [switch]$Office365
 )
