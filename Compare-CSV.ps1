@@ -2,6 +2,7 @@
 #  Author  : BMO
 #  Purpose : To Compare two different CSV files and export the unique values to an output file
 #  Created : 10/1/2018
+#  Status  : Functional
 #>
 
 Param
@@ -31,14 +32,14 @@ $compare_files = Compare-Object -ReferenceObject $(Import-CSV -Path $FileOne) -D
 $compare_files_sort = $compare_files | Select @{
     Name='Alias';
 	Expression={
-	    $_.InputObject.Alias
-		}
+        $_.InputObject.Alias
+	}
     },
-	@{
-	Name='PrimarySmtpAddress';
-	Expression={
-	    $_.InputObject.PrimarySmtpAddress
-		}
-	} 
+    @{
+    Name='PrimarySmtpAddress';
+    Expression={
+        $_.InputObject.PrimarySmtpAddress
+	}
+    } 
 	
 $compare_files_sort | Sort Alias | Export-CSV $OutCSV
