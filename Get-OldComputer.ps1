@@ -3,7 +3,7 @@
 #  Purpose : Find all computer objects that havn't checked into Active Directory for 30 or more days to 
 #            identify potentially retired computers that can be removed or disabled.
 #  Created : September 16, 2018
-#  Updated : September 21, 2018
+#  Updated : October 3, 2018
 #  Status  : Functional
 #>
 
