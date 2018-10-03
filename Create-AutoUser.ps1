@@ -37,6 +37,8 @@ Param
     [string]$FirstName,
     [string]$LastName,
     [string]$DomainName,
+    [string]$ExchangeHostname,
+    [string]$ExchangeDB,
     [string]$TemplateUser,
     [string]$Password
 )
@@ -59,7 +61,8 @@ Import-Module ActiveDirectory
 
 $display_name = "$FirstName $LastName"
 $samaccountname = "$($FirstName[0])$LastName"
-$upn_name = "$samaccountname@$DomainName"
+$upn_name = "$samaccountname@$DomainName.local"
+$email = "$samaccountname@$DomainName.net"
 $temp_password = ConvertTo-SecureString -String $Password -AsPlainText -Force
 $template = Get-ADUser -Identity $TemplateUser
 $get_ad_groups = Get-ADPrincipalGroupMembership -Identity $TemplateUser | Select -ExpandProperty name
@@ -95,7 +98,7 @@ While($i -lt $FirstName.Length)
 $final_check = [ordered]@{
     "Name"=$display_name
     "SamAccountName"=$samaccountname
-    "UPN"=$upn_name
+    "UPN/Email"=$upn_name
     "Parent OU"=(($template).distinguishedname -replace '^.+?,(CN|OU.+)','$1')
     "AD Groups"=$get_ad_groups
 }
@@ -121,6 +124,16 @@ if ($accept_user -eq "y")
     {
         Add-ADGroupMember -Identity $group -Members $samaccountname
     }
+
+    # Connect to an on premesis exchange server and create a mailbox for the new user
+    $user_credential = Get-Credential
+    $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://$ExchangeHostname/PowerShell/ `
+    -Credential $user_credential -Authentication Kerberos
+    Import-PSSession $Session
+    
+    Enable-Mailbox -Identity $samaccountname -Alias $samaccountname -PrimarySmtpAddress $email -Database $ExchangeDB
+    Set-MAilbox $email -LitigationHoldEnabled $true
+
 }
 elseif ($accept_user -eq "n")
 {
