@@ -44,7 +44,7 @@ $computer_list_scrubed = ForEach($computer in $all_computer_objects)
     }
 }
 
-$computer_paramcheck = $computer_list_scrubbed | Select-Object `
+$computer_paramcheck = $computer_list_scrubed | Select-Object `
     @{
         Expression={
             $_.Name
