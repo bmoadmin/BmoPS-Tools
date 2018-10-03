@@ -71,9 +71,9 @@ $i=1
 ########### MAIN ############
 
 # Check to confirm that the username is not already taken
-While($i -lt $FirstName.Length)
+if(Get-ADUser $samaccountname)
 {
-    if(Get-ADUser $samaccountname)
+    While($i -lt $FirstName.Length)
     {
         Write-Host "It looks like the ldap $samaccountname already exists"
         $samaccountname = "$(($FirstName).Substring(0,$i))$LastName"
