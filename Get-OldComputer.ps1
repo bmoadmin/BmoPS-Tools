@@ -9,13 +9,14 @@
 
 <#
     .SYNOPSIS
-      Get-OldComputer.ps1 is a script to help assist in AD cleanup by identifying all computer objects that have not checked in for 30 or more days.
+      Get-OldComputer.ps1 is a script to help assist in AD cleanup by identifying all computer objects that either have or have not checked into the domain in 30 days.  The have or have not is specified by the -NewerThen or -OlderThen String
+    .SYNTAX
+      ./Get-OldComputer.ps1 [-NewerThen] [-ExportCSV <string>]
+
+      ./Get-OldComputer.ps1 [-OlderThen] [-ExportCSV <string>]
+
     .EXAMPLE
-      ./Get-OldComputer.ps1
-    .EXAMPLE
-      ./Get-OldComputer.ps1 -ExportCSV <path>
-    .EXAMPLE
-      ./Get-OldComputer.ps1 -ExportCSV C:\Users\jdoe\Documents\computer_export.csv
+      ./Get-OldComputer.ps1 -OlderThen -ExportCSV C:\Users\jdoe\Documents\computer_export.csv
 #>
 
 [CmdletBinding()]
@@ -31,30 +32,36 @@ Param
 Import-Module ActiveDirectory
 
 ########## Variables ############
+
 $daysback = "-30"
 $current_date = Get-Date
 $month_old = $current_date.AddDays($daysback)
 $current_date_string = Get-Date -DisplayHint Date | Out-String
 $all_computer_objects = Get-ADComputer -Filter * -Properties * | ?{ $_.Enabled -eq $True }
 
-function CollectInfo($comparison)
+
+############## MAIN ###############
+
+# Check if the OlderThen or NewerThen parameters are present, use that to operate on one side of the date line, or else die if null.
+if($OlderThen)
 {
     $computer_list_scrubed = ForEach($computer in $all_computer_objects) 
     {
-        if( $computer.LastLogonDate $comparison $month_old )
+        if( $computer.LastLogonDate -lt $month_old )
         {
             $computer
         }
     }
 }
-
-if($OlderThen)
-{
-    CollectInfo("-lt")
-}
 elseif($NewerThen)
 {
-    CollectInfo("-gt")
+    $computer_list_scrubed = ForEach($computer in $all_computer_objects) 
+    {
+        if( $computer.LastLogonDate -gt $month_old )
+        {
+            $computer
+        }
+    }
 }
 else
 {
