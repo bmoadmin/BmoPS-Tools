@@ -22,6 +22,8 @@
 Param
 (
     [Parameter()]
+    [switch]$OlderThen,
+    [switch]$NewerThen,
     [string]$ExportCSV
 )
 
@@ -35,14 +37,31 @@ $month_old = $current_date.AddDays($daysback)
 $current_date_string = Get-Date -DisplayHint Date | Out-String
 $all_computer_objects = Get-ADComputer -Filter * -Properties * | ?{ $_.Enabled -eq $True }
 
-
-$computer_list_scrubed = ForEach($computer in $all_computer_objects) 
+function CollectInfo($comparison)
 {
-    if( $computer.LastLogonDate -lt $month_old )
+    $computer_list_scrubed = ForEach($computer in $all_computer_objects) 
     {
-        $computer
+        if( $computer.LastLogonDate $comparison $month_old )
+        {
+            $computer
+        }
     }
 }
+
+if($OlderThen)
+{
+    CollectInfo("-lt")
+}
+elseif($NewerThen)
+{
+    CollectInfo("-gt")
+}
+else
+{
+    Throw "Please provide the NewerThen or OlderThen parameters to define what side of the timeline youre searching for last login"
+}
+
+
 
 $computer_paramcheck = $computer_list_scrubed | Select-Object `
     @{
@@ -64,7 +83,7 @@ $computer_paramcheck = $computer_list_scrubed | Select-Object `
         Label="Operating System"
     }
 
-if($ExportCSV -ne $null)
+if($ExportCSV)
 {
     $computer_paramcheck | Export-CSV $ExportCSV
 }
