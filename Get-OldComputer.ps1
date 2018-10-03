@@ -57,6 +57,7 @@ $computer_paramcheck = $computer_list_scrubbed | Select-Object `
         };
         Label="Last Logon"
     },
+    @{
         Expression={
             $_.OperatingSystem
         };
