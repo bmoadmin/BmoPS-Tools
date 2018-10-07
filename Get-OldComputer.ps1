@@ -3,7 +3,7 @@
 #  Purpose : Find all computer objects that havn't checked into Active Directory for 30 or more days to 
 #            identify potentially retired computers that can be removed or disabled.
 #  Created : September 16, 2018
-#  Updated : October 3, 2018
+#  Updated : October 6, 2018
 #  Status  : Functional
 #>
 
@@ -88,7 +88,13 @@ $computer_paramcheck = $computer_list_scrubed | Select-Object `
             $_.OperatingSystem
         };
         Label="Operating System"
-    }
+    },
+    @{
+        Expression={
+            $_.IPv4Address
+        };
+        Label="IP Address"
+     }
 
 if($ExportCSV)
 {
