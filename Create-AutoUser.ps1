@@ -64,7 +64,7 @@ $samaccountname = "$($FirstName[0])$LastName"
 $upn_name = "$samaccountname@$DomainName.local"
 $email = "$samaccountname@$DomainName.net"
 $temp_password = ConvertTo-SecureString -String $Password -AsPlainText -Force
-$template = Get-ADUser -Identity $TemplateUser
+$template = Get-ADUser -Identity $TemplateUser -Properties *
 $get_ad_groups = Get-ADPrincipalGroupMembership -Identity $TemplateUser | Select -ExpandProperty name
 $i=1
 
@@ -101,6 +101,7 @@ $final_check = [ordered]@{
     "UPN/Email"=$upn_name
     "Parent OU"=(($template).distinguishedname -replace '^.+?,(CN|OU.+)','$1')
     "AD Groups"=$get_ad_groups
+    "Logon Script"=($template).ScriptPath
 }
 
 Write-Host "Are you sure you want to create a new user with the following properties?"
@@ -118,7 +119,8 @@ $accept_user = Read-Host "Is this correct [y/n]?"
 if ($accept_user -eq "y") 
 {
     New-ADUser -Name $display_name -GivenName $FirstName -Surname $LastName -DisplayName $display_name -SamAccountName $samaccountname `
-    -AccountPassword $temp_password -UserPrincipalName $upn_name -Path $final_check.("Parent OU") -Enabled $True
+    -AccountPassword $temp_password -UserPrincipalName $upn_name -Path $final_check.("Parent OU") -ScriptPath $final_check("Logon Script") `
+    -Enabled $True
 
     ForEach($group in $get_ad_groups)
     {
