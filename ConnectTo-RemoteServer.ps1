@@ -30,6 +30,7 @@ Param
     )]
     [switch]$DomainController,
     [switch]$Exchange,
+    [switch]$FileServer,
     [switch]$Office365
 )
 
@@ -42,12 +43,19 @@ if($Exchange)
     -Credential $user_credential -Authentication Kerberos
     Import-PSSession $Session
 }
-elseif($DomainController -ne $null)
+elseif($DomainController)
 {
     Set-ExecutionPolicy Unrestricted -Force
     $Session = New-PSSession -ComputerName $Hostname -Credential $user_credential -Authentication Kerberos
     Invoke-Command $Session -ScriptBlock { Import-Module ActiveDirectory,GroupPolicy }
     Import-PSSession $Session -module ActiveDirectory,GroupPolicy
+}
+elseif($FileServer)
+{
+    Set-ExecutionPolicy Unrestricted -Force
+    $Sessions = New-PSSession -ComputerName $Hostname -Credential $user_credential -Authentication Kerberos
+    Invoke-Command $Session -ScriptBlock { Import-Module smbshare }
+    Import-PSSession $Session -module smbshare
 }
 elseif($Office365)
 {
