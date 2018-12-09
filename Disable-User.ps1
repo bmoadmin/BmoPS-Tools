@@ -70,7 +70,8 @@ ForEach($user in $Users)
 
 
     # Get all the groups a user is in besides the disabled user group and then remove them for all those other groups.
-    $groups = Get-ADUser $user -Properties * | Select -ExpandProperty MemberOf | ?{ `
+    $groups = Get-ADUser $user -Properties * | Select -ExpandProperty MemberOf | `
+    Where{ 
         $_ -notmatch $DisabledUserGroup
     }
     ForEach($group in $groups)
