@@ -53,15 +53,13 @@ $disabled_ou_dn = (Get-ADOrganizationalUnit -Filter * | ?{ $_.Name -eq $Disabled
 # Check to verify that the organizational unit specified by the DisabledOU argument exists in active directory. If not exit the script.
 if(-Not $(Get-ADOrganizationalUnit -Identity $disabled_ou_dn))
 {
-    throw "Organizational Unit $($disabled_ou_dn) not found, confirm that you've spelled the OU name correctly.  Check by using `
-           the Get-ADOrganizationalUnit cmdlet or reviewing ADUC then run the script again."
+    Write-Error "Organizational Unit $DisabledOU not found, confirm that you've spelled the OU name correctly.  Check by using the Get-ADOrganizationalUnit cmdlet or reviewing ADUC then run the script again." -ErrorAction Stop
 }
 
 # Check to verify that the group specified by the DisabledUserGroup argument exists in active directory. If not exit the script.
 if(-Not $(Get-ADGroup $DisabledUserGroup))
 {
-    throw "Group $($DisabledUserGroup) not found, confirm that you've spelled the group name correctly. Check by using `
-           Get-ADGroup cmdlet or reviewing the group properties in ADUC then run the script again."
+    Write-Error "Group $DisabledUserGroup not found, confirm that you've spelled the group name correctly. Check by using Get-ADGroup cmdlet or reviewing the group properties in ADUC then run the script again." -ErrorAction Stop
 }
 
 # Check to verify that each user exists in active directory, if not exit the script.
@@ -69,8 +67,7 @@ ForEach($user in $Users)
 {
     if(-Not $(Get-ADUser -Identity $user))
     {
-        throw "Account $($user) not found, confirm that you've spelled the SamAccountName correctly. Check by using `
-               the Get-ADUser cmdlet or reviewing the account properties in ADUC then run the script again."
+        Write-Error "Account $Users not found, confirm that you've spelled the SamAccountName correctly. Check by using the Get-ADUser cmdlet or reviewing the account properties in ADUC then run the script again." -ErrorAction Stop
     }
 }
 
