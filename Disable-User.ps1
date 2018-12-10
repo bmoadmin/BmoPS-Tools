@@ -5,7 +5,6 @@
 #  Updated : December 10, 2018
 #  Status  : Functional
 #>
-
 <#
     .SYNOPSIS
       Automatically disable one or more users.  
