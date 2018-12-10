@@ -2,15 +2,45 @@
 #  Author  : BMO
 #  Purpose : Automate the disabling of AD Users.
 #  Created : September 22, 2018
-#  Updated : December 9, 2018
+#  Updated : December 10, 2018
 #  Status  : Functional
 #>
 
 <#
     .SYNOPSIS
-      Disable-User.ps1 is a script intended to automate a large portion of the user offboarding process
+      Automatically disable one or more users.  
+
+    .DESCRIPTION
+      Automatically handle disabling one or mutliple active directory user account by removing them from all security groups except a 
+      single approved group for disabled accounts, resetting their password, and moving them to a disabled user organizational unit. 
+
+    .PARAMETER Users
+      Specifies all the users to be disabled by the script.
+      Will only accept the SamAccountName of a user. 
+
+    .PARAMETER DisabledPassword
+      Specified the password to be given to the diabled users. Will only accept type System.String
+
+    .PARAMETER DisabledUserGroup
+      Specifies the group to place the disabled users in and set as their primary group.
+
+    .PARAMETER DisabledOU
+      Specified the active directory organizational unit to move all the disabled user accounts to.
+
     .EXAMPLE
-      .\Disable-User.ps1 -Identity jdoe -DomainName bigcompany.local -DisabledOU "Terminated Users"
+      .\Disable-User.ps1 -Users "jdoe" -DiabledPassword "Disabled-P@55" -DisabledUserGroup "Terminated-Users" -DisabledOU "Terminated Users"
+    
+      Disable a single user with a samaccount name of jdoe, reset his password to Disabled-P@55, place him in the Terminated-Users 
+      security group and set it as the primary group, and move him to the "Terminated Users" organizational unit. 
+
+    .EXAMPLE
+      .\Disable-User.ps1 -Users "jdoe","hjohnson","kcrawford" -DisabledPassword "Disabled-P@55" -DisabledUserGroup "Disabled" -DisabledOU "Disabled"
+
+      Disable users jdoe, hjohnson, and kcrawford.  Reset all their passwords to Disabled-P@55, place them all in the Disabled group and
+      set it as the primary group for all, and move every user to the Disabled organizational unit. 
+
+    .NOTES
+        github.com/Bmo1992
 #>
 
 # Parameters to be passed to the script.
