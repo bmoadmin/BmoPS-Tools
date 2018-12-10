@@ -60,12 +60,12 @@ ForEach($user in $Users)
 
     # Add the user to the Disabled user group passed to the script by the DisabledUserGroup argument. Get the sid of the disabled 
     # user group, grab the last 4 numbers in the sid and then set disabled user group as the user's primary group. 
-    # Discovered that when using powershell remoting primary_group_sid will return as .NET type System.String whereas when
-    # run locally it returns as System.Security.Principal.SecurityIdentifier; implemented a check to confirm what type 
-    # is returned by primary_group_sid to fix the errors caused by this.
-
     Add-ADGroupMember -Identity $DisabledUserGroup -Members $user
     $primary_group_sid = (Get-ADGroup $DisabledUserGroup).Sid
+
+    # Implemented bug fix for powershell remoting. When remoting, primary_group_sid will return as .NET type System.String 
+    # whereas when run locally it returns as System.Security.Principal.SecurityIdentifier; Created a check to confirm 
+    # what type is returned by primary_group_sid to fix the errors caused by this.
     $group_type_name = ($primary_group_sid | Get-Member).TypeName | Get-Unique
     if($group_type_name -eq "System.String")
     {
