@@ -20,9 +20,8 @@ Param
     [Parameter(
         Mandatory=$True
     )]
-    [string]$Users,
+    [string[]]$Users,
     [string]$DisabledPassword,
-    [string]$DomainName,
     [string]$DisabledUserGroup,
     [string]$DisabledOU
 )
@@ -47,7 +46,6 @@ Import-Module ActiveDirectory
 $disabled_password = ConvertTo-SecureString -String $DisabledPassword -AsPlainText -Force
 $disabled_ou_dn = (Get-ADOrganizationalUnit -Filter * | ?{ $_.Name -eq $DisabledOU }).DistinguishedName
 
-
 ########### MAIN ############
 
 # Loop through each element of the Users array which is passed to the script as an argument. 
@@ -62,9 +60,21 @@ ForEach($user in $Users)
 
     # Add the user to the Disabled user group passed to the script by the DisabledUserGroup argument. Get the sid of the disabled 
     # user group, grab the last 4 numbers in the sid and then set disabled user group as the user's primary group. 
+    # Discovered that when using powershell remoting primary_group_sid will return as .NET type System.String whereas when
+    # run locally it returns as System.Security.Principal.SecurityIdentifier; implemented a check to confirm what type 
+    # is returned by primary_group_sid to fix the errors caused by this.
+
     Add-ADGroupMember -Identity $DisabledUserGroup -Members $user
     $primary_group_sid = (Get-ADGroup $DisabledUserGroup).Sid
-    [int]$primary_group_id = $primary_group_sid.Substring($primary_group_sid.LastIndexOf("-")+1)
+    $group_type_name = ($primary_group_sid | Get-Member).TypeName | Get-Unique
+    if($group_type_name -eq "System.String")
+    {
+        [int]$primary_group_id = $primary_group_sid.Substring($primary_group_sid.LastIndexOf("-")+1)
+    }
+    else
+    {
+        [int]$primary_group_id = $primary_group_sid.Value.Substring($primary_group_sid.Value.LastIndexOf("-")+1)
+    }
     Set-ADObject -Identity $(Get-ADUser $user | Select -ExpandProperty DistinguishedName) -Replace `
     @{primaryGroupID="$primary_group_id"}
 
