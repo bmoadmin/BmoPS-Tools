@@ -41,12 +41,38 @@ if(-not $principal.IsInRole($role))
 Import-Module ActiveDirectory -ErrorAction SilentlyContinue
 
 
-######### VARIABLES ##########
+######### GLOBAL VARIABLES ##########
 
+$ErrorActionPreference = "SilentlyContinue"
 $disabled_password = ConvertTo-SecureString -String $DisabledPassword -AsPlainText -Force
 $disabled_ou_dn = (Get-ADOrganizationalUnit -Filter * | ?{ $_.Name -eq $DisabledOU }).DistinguishedName
 
-########### MAIN ############
+############### MAIN ################
+
+# Before running the main portion of the script, check that all arguments passed to the script exist in active directory.
+# Check to verify that the organizational unit specified by the DisabledOU argument exists in active directory. If not exit the script.
+if(-Not $(Get-ADOrganizationalUnit -Identity $disabled_ou_dn))
+{
+    throw "Organizational Unit $($disabled_ou_dn) not found, confirm that you've spelled the OU name correctly.  Check by using `
+           the Get-ADOrganizationalUnit cmdlet or reviewing ADUC then run the script again."
+}
+
+# Check to verify that the group specified by the DisabledUserGroup argument exists in active directory. If not exit the script.
+if(-Not $(Get-ADGroup $DisabledUserGroup))
+{
+    throw "Group $($DisabledUserGroup) not found, confirm that you've spelled the group name correctly. Check by using `
+           Get-ADGroup cmdlet or reviewing the group properties in ADUC then run the script again."
+}
+
+# Check to verify that each user exists in active directory, if not exit the script.
+ForEach($user in $Users)
+{
+    if(-Not $(Get-ADUser -Identity $user))
+    {
+        throw "Account $($user) not found, confirm that you've spelled the SamAccountName correctly. Check by using `
+               the Get-ADUser cmdlet or reviewing the account properties in ADUC then run the script again."
+    }
+}
 
 # Loop through each element of the Users array which is passed to the script as an argument. 
 ForEach($user in $Users)
@@ -88,7 +114,6 @@ ForEach($user in $Users)
     {
         Remove-ADGroupMember -Identity $group -Members $user -Confirm:$False
     }
-
 
     # Finally disable the user and move them to the disabled user OU.
     Disable-ADAccount -Identity $user
