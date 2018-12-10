@@ -2,25 +2,44 @@
 #  Author  : BMO
 #  Purpose : Find all users that havn't logged into the Domain in 30 or more days { that arn't disabled } 
 #  Created : September 17, 2018
-#  Updated : September 21, 2018
+#  Updated : October 10, 2018
 #  Status  : Finished
 #>
-
 <#
     .SYNOPSIS
-      Get-OldUser.ps1 is a script to quickly audit a list of all users who have not signed into the domain in over 30 days.
+      See who has not logged into the domain in a certain number of days.
+
+    .DESCRIPTION
+      Get all users who have not logged into the domain in the numbers of days specified by the NumDays argument. In order to run you
+      must be connected to a domain controller and have adequate permissions to view the attributes of active directory objects.
+
+    .PARAMETER NumDays
+      Specifically the number of days before the current date you want to set. Any account that has not checked in since that date
+      is displayed with the last known logon date
+
+    .PARAMETER ExportCSV
+      Export the information to a csv file thats been specified by its path.
+
     .EXAMPLE
-      .\Get-OldUser.ps1
+      .\Get-OldUser.ps1 -NumDays 30
+
+      Gets all users who have not checked into the domain in 30 days or more and prints the info to stdout. 
+
     .EXAMPLE
-      .\Get-OldUser.ps1 -ExportCSV <path>
-    .EXAMPLE
-      .\Get-OldUser.ps1 -ExportCSV C:\Users\jdoe\Documents\user_export.csv
+      .\Get-OldUser.ps1 -NumDays 20 -ExportCSV C:\Users\jdoe\Documents\user_export.csv
+
+      Gets all users who have not checked into the domain in 20 days or more and exports that information to the csv file 
+      C:\Users\jdoe\Documents\user_export.csv
+
+    .NOTES
+      github.com/Bmo1992
 #>
 
 [CmdletBinding()]
 Param
 (
     [Parameter()]
+    [int]$NumDays,
     [String]$ExportCSV
 )
 
@@ -38,13 +57,15 @@ if(-not $principal.IsInRole($role))
 # Required module to run the cmdlets in the script
 Import-Module ActiveDirectory
 
-########## Variables ############
-$daysback = "-30"
+######## VARIABLES ##########
+
+$daysback = "-($NumDays)"
 $current_date = Get-Date
 $month_old = $current_date.AddDays($daysback)
 $all_user_objects = Get-ADUser -Filter * -Properties * | ?{ $_.Enabled -eq $True }  
 $csv_path = $ExportCSV
 
+############ MAIN ############
 
 $user_list_scrubbed = ForEach($user in $all_user_objects) 
 {
