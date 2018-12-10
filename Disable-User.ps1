@@ -3,7 +3,7 @@
 #  Purpose : Automate the disabling of AD Users.
 #  Created : September 22, 2018
 #  Updated : December 9, 2018
-#  Status  : Unfinished
+#  Status  : Functional
 #>
 
 <#
@@ -38,7 +38,7 @@ if(-not $principal.IsInRole($role))
 }
 
 # Required modules to run the cmdlets in the script.
-Import-Module ActiveDirectory
+Import-Module ActiveDirectory -ErrorAction SilentlyContinue
 
 
 ######### VARIABLES ##########
