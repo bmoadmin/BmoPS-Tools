@@ -16,19 +16,19 @@
       Automate a large portion of the user creation process by entering the first name, last name, and template user.  The template user
       serves as a basis for the parent organizational unit, security group membership, and logon scripts.
 
-    .PARAMETERS FirstName
+    .PARAMETER FirstName
       Specifies the first name of the new user to create.
 
-    .PARAMETERS LastName
+    .PARAMETER LastName
       Specifies the last name of the new user to create.
 
-    .PARAMETERS DomainName
+    .PARAMETER DomainName
       Specifies the domain name that the user is being created on.
 
-    .PARAMETERS TemplateUser
+    .PARAMETER TemplateUser
       Specifies the currently existing user on which to base the new users parent organizational unit, security group membership, and logon script.
 
-    .PARAMETERSE Password
+    .PARAMETER Password
       Specifies the newly created users password. 
 
     .EXAMPLE
