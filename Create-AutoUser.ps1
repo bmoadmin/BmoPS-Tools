@@ -10,11 +10,34 @@
 
 <#
     .SYNOPSIS
-      Create-AutoUser.ps1 is a script intended to automate a large portion of the new user creation process
-    .SYNTAX
-      .\Create-AutoUser.ps1 -FirstName <string> -LastName <string> -DomainName <string> -TremplateUser <string> -Password <string>
+      Automate the new user creation process.
+
+    .DESCRIPTION
+      Automate a large portion of the user creation process by entering the first name, last name, and template user.  The template user
+      serves as a basis for the parent organizational unit, security group membership, and logon scripts.
+
+    .PARAMETERS FirstName
+      Specifies the first name of the new user to create.
+
+    .PARAMETERS LastName
+      Specifies the last name of the new user to create.
+
+    .PARAMETERS DomainName
+      Specifies the domain name that the user is being created on.
+
+    .PARAMETERS TemplateUser
+      Specifies the currently existing user on which to base the new users parent organizational unit, security group membership, and logon script.
+
+    .PARAMETERSE Password
+      Specifies the newly created users password. 
+
     .EXAMPLE
-      .\Create-AutoUser.ps1 -FirstName John -LastName Smith -DomainName bigcompany.local -TemplateUser jdoe
+      Create-AutoUser.ps1 -FirstName John -LastName Smith -DomainName bigcompany.local -TemplateUser jdoe
+
+      Creates a new user named John Smith on the bigcompany.local domain based of the user jdoe.
+
+    .NOTES
+      github.com/Bmo1992
 #>
 
 <###############################
