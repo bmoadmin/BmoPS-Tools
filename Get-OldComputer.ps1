@@ -48,10 +48,10 @@ Param
         Mandatory=$True
     )]
     [int]$NumDays,
-    [switch]$OlderThen,
-    [switch]$NewerThen,
     [Parameter(
     )]
+    [switch]$OlderThen,
+    [switch]$NewerThen,
     [string]$ExportCSV
 )
 
