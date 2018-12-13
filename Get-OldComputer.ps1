@@ -3,28 +3,55 @@
 #  Purpose : Find all computer objects that havn't checked into Active Directory for 30 or more days to 
 #            identify potentially retired computers that can be removed or disabled.
 #  Created : September 16, 2018
-#  Updated : October 6, 2018
+#  Updated : December 13, 2018
 #  Status  : Functional
 #>
 
 <#
     .SYNOPSIS
-      Get-OldComputer.ps1 is a script to help assist in AD cleanup by identifying all computer objects that either have or have not checked into the domain in 30 days.  The have or have not is specified by the -NewerThen or -OlderThen String
-    .SYNTAX
-      ./Get-OldComputer.ps1 [-NewerThen] [-ExportCSV <string>]
+      Gets all computers that havn't logged into the domain in X amount of days.
 
-      ./Get-OldComputer.ps1 [-OlderThen] [-ExportCSV <string>]
+    .DESCRIPTION
+      Get-OldComputer.ps1 is a script to help assist in AD cleanup by identifying all computer objects that either have or have not checked into the domain in X days.  The have or have not is specified by the -NewerThen or -OlderThen String. Information can be exported to csv by passing the desired path to the csv file in the ExportCSV argument.  
+
+    .PARAMETER NumDays
+      Specifies the number of days from today to perform the check from.
+
+    .PARAMETER OlderThen
+      Specifies to check for all computers whos last logon date was before the date set by NumDays.
+
+    .PARAMETER NewerThen
+      Specifies to check for all computeres whos last logon date was after the date set by NumDays.
+
+    .PARAMETER ExportCSV
+      Specifies the path to the CSV file the user would like to export the information gathered to.
 
     .EXAMPLE
-      ./Get-OldComputer.ps1 -OlderThen -ExportCSV C:\Users\jdoe\Documents\computer_export.csv
+      Get-OldComputer.ps1 -NumDays 30 -OlderThen -ExportCSV C:\Users\jdoe\Documents\computer_export.csv
+  
+      Get all computers that havn't checked into the domain for the last 30 days and export the information to C:\Users\jdoe\Documents\computer_export.csv
+
+    .EXAMPLE
+      Get-OldComputer.ps1 -NumDays 20 -NewerThen
+
+      Get all computers that have logged in withint that last 20 days.
+
+    .NOTES
+      github.com/Bmo1992
 #>
 
+# Parameteres to be passed to the script.
 [CmdletBinding()]
 Param
 (
-    [Parameter()]
+    [Parameter(
+        Mandatory=$True
+    )]
+    [int]$NumDays,
     [switch]$OlderThen,
     [switch]$NewerThen,
+    [Parameter(
+    )]
     [string]$ExportCSV
 )
 
@@ -33,7 +60,7 @@ Import-Module ActiveDirectory
 
 ########## Variables ############
 
-$daysback = "-30"
+$daysback = "-($NumDays)"
 $current_date = Get-Date
 $month_old = $current_date.AddDays($daysback)
 $current_date_string = Get-Date -DisplayHint Date | Out-String
@@ -68,8 +95,7 @@ else
     Throw "Please provide the NewerThen or OlderThen parameters to define what side of the timeline youre searching for last login"
 }
 
-
-
+# Take the computers that were selected in the above check and then use a hashtable to grab and format important information about them.
 $computer_paramcheck = $computer_list_scrubed | Select-Object `
     @{
         Expression={
@@ -96,6 +122,7 @@ $computer_paramcheck = $computer_list_scrubed | Select-Object `
         Label="IP Address"
      }
 
+# If the ExportCSV parameter was used export the information to the CSV specified in the PATH passed to that parameter.
 if($ExportCSV)
 {
     $computer_paramcheck | Export-CSV $ExportCSV
