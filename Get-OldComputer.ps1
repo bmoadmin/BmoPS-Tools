@@ -55,8 +55,26 @@ Param
     [string]$ExportCSV
 )
 
-# Required module to run the cmdlets in the script
-Import-Module ActiveDirectory
+# The ActiveDirectory module is required to run this script. First check if its installed, if not and its available import it.  If the 
+# module is not available, check to see if the user is currently in a remote ps session that has it loaded. If neither exit the script
+# with a warning message.
+if(-Not (Get-Module ActiveDirectory)
+{
+    $modules = Get-Module 
+
+    if((Get-Module -ListAvailable).Name -match "ActiveDirectory")
+    {
+        Import-Module ActiveDirectory
+    }
+    elseif($modules.ExportedCommands.Values -match "Set-ADUser")
+    {
+        Write-Host "Connected to $((Get-PSSession).ComputerName), running script against the remote PC" -ForegroundColor Magenta
+    }
+    else
+    {
+        Write-Error "No local or remote computer with the ActiveDirectory powershell module found. Please run the script on a computer with the correct roles install or establish a remote PS session with that computer" -ErrorAction Stop
+    }
+}
 
 ########## Variables ############
 
@@ -74,7 +92,7 @@ if($OlderThen)
 {
     $computer_list_scrubed = ForEach($computer in $all_computer_objects) 
     {
-        if( $computer.LastLogonDate -lt $month_old )
+        if($computer.LastLogonDate -lt $month_old)
         {
             $computer
         }
@@ -84,7 +102,7 @@ elseif($NewerThen)
 {
     $computer_list_scrubed = ForEach($computer in $all_computer_objects) 
     {
-        if( $computer.LastLogonDate -gt $month_old )
+        if($computer.LastLogonDate -gt $month_old)
         {
             $computer
         }
