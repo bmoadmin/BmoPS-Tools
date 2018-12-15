@@ -1,12 +1,4 @@
 <#
-#  Author  : BMO
-#  Purpose : Automate the disabling of AD Users.
-#  Created : September 22, 2018
-#  Updated : December 10, 2018
-#  Status  : Functional
-#>
-
-<#
     .SYNOPSIS
       Automatically disable one or more users.  
 
@@ -40,7 +32,13 @@
       set it as the primary group for all, and move every user to the Disabled organizational unit. 
 
     .NOTES
-        github.com/Bmo1992
+      NAME    : Disable-User.ps1
+      AUTHOR  : BMO
+      EMAIL   : brandonseahorse@gmail.com
+      GITHUB  : github.com/Bmo1992
+      CREATED : September 22, 2018
+      UPDATED : December 15, 2018
+      STATUS  : Functional
 #>
 
 # Parameters to be passed to the script.
