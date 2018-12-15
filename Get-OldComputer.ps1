@@ -1,13 +1,4 @@
 <#
-#  Author  : BMO
-#  Purpose : Find all computer objects that havn't checked into Active Directory for 30 or more days to 
-#            identify potentially retired computers that can be removed or disabled.
-#  Created : September 16, 2018
-#  Updated : December 13, 2018
-#  Status  : Functional
-#>
-
-<#
     .SYNOPSIS
       Gets all computers that havn't logged into the domain in X amount of days.
 
@@ -37,7 +28,13 @@
       Get all computers that have logged in withint that last 20 days.
 
     .NOTES
-      github.com/Bmo1992
+      NAME    : Get-OldComputer.ps1
+      AUTHOR  : BMO
+      EMAIL   : brandonseahorse@gmail.com
+      GITHUB  : github.com/Bmo1992
+      CREATED : September 16, 2018
+      UPDATED : December 15, 2018
+      STATUS  : Functional
 #>
 
 # Parameteres to be passed to the script.
@@ -58,7 +55,7 @@ Param
 # The ActiveDirectory module is required to run this script. First check if its installed, if not and its available import it.  If the 
 # module is not available, check to see if the user is currently in a remote ps session that has it loaded. If neither exit the script
 # with a warning message.
-if(-Not (Get-Module ActiveDirectory)
+if(-Not (Get-Module ActiveDirectory))
 {
     $modules = Get-Module 
 
