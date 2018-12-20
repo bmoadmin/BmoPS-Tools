@@ -1,12 +1,4 @@
 <#
-#  Author  : BMO
-#  Purpose : Find all users that havn't logged into the Domain in 30 or more days { that arn't disabled } 
-#  Created : September 17, 2018
-#  Updated : October 10, 2018
-#  Status  : Finished
-#>
-
-<#
     .SYNOPSIS
       See who has not logged into the domain in a certain number of days.
 
@@ -33,14 +25,24 @@
       C:\Users\jdoe\Documents\user_export.csv
 
     .NOTES
-      github.com/Bmo1992
+      NAME    : Get-OldUser.ps1
+      AUTHOR  : BMO
+      EMAIL   : brandonseahorse@gmail.com
+      GITHUB  : github.com/Bmo1992
+      CREATED : September 17, 2018
+      UPDATED : December 20, 2018
+      STATUS  : Functional
 #>
 
 [CmdletBinding()]
 Param
 (
-    [Parameter()]
+    [Parameter(
+        Mandatory=$True
+    )]
     [int]$NumDays,
+    [Parameter(
+    )]
     [String]$ExportCSV
 )
 
@@ -55,8 +57,25 @@ if(-not $principal.IsInRole($role))
     throw "This script requires elevated permissions, please confirm youre running from an elevated powershell prompt as an administrator"
 }
 
-# Required module to run the cmdlets in the script
-Import-Module ActiveDirectory
+# Check to see if the ActiveDirectory module is installed or if we're connected to a remote computer with the module imported to the PS 
+# session.  If not exit the script and warn the user.
+if(-Not (Get-Module ActiveDirectory))
+{
+    $modules = Get-Module
+
+    if((Get-Module -ListAvailable).Name -match "ActiveDirectory")
+    {
+        Import-Module ActiveDirectory
+    }
+    elseif($modules.ExportedCommands.Values -match "Set-ADUser")
+    {
+        Write-Host "Connected to $((Get-PSSession).ComputerName), running script against the remote PC" -Foreground Color Magenta
+    }
+    else
+    {
+        Write-Error "No local or remote computer with the ActiveDirectory powershell module found. Please log into a computer with the correct roles installed or establish a remote PS session with that computer" -ErrorAction Stop
+    }
+}
 
 ######## VARIABLES ##########
 
