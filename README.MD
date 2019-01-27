@@ -1,7 +1,8 @@
-## Powershell Scripts
-This repo is for Powershell scripts that I've written to make my daily worklife easier and more efficient.
-All scripts in this repository are public and free to use.  
-Scripts are organized into the following status groups:
-- Unfinished : Currently not functional, work in progress
-- Functional : Working but the original scope has not been fully implemented
-- Finished   : Original scope has been acheived in a functional script
+# BmoPS-Tools
+
+BmoPS-Tools is a powershell module full of functions I've written in order to make my daily worklife easier.
+The current state of the module is unfinished. 
+
+I've organized the functions into two main directories:
+    - Functions: This is where working functions tested and ready for productions reside.
+    - Unfinished: This is for functions currently not ready for any number of reasons are stored. 
