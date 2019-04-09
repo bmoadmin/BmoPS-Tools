@@ -86,29 +86,57 @@ Function Connect-RemoteServer
     # Check which server type was specified as a function argument and execute the necessary steps to log into that specific server.
     if($Exchange)
     {
-        $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://$Hostname/PowerShell/ `
-        -Credential $user_credential -Authentication Kerberos
-        Import-PSSession $Session
+        Try
+        {
+            $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://$Hostname/PowerShell/ `
+            -Credential $user_credential -Authentication Kerberos
+            Import-PSSession $Session
+        }
+        Catch
+        {
+            Throw "Couldn't connect to $Hostname, please confirm the remote computer is on and that you can reach it."
+        }
     }
     elseif($DomainController)
     {
         Set-ExecutionPolicy Unrestricted -Force
-        $Session = New-PSSession -ComputerName $Hostname -Credential $user_credential -Authentication Kerberos
-        Invoke-Command $Session -ScriptBlock { Import-Module ActiveDirectory,GroupPolicy }
-        Import-PSSession $Session -module ActiveDirectory,GroupPolicy
+        Try
+        {
+            $Session = New-PSSession -ComputerName $Hostname -Credential $user_credential -Authentication Kerberos
+            Invoke-Command $Session -ScriptBlock { Import-Module ActiveDirectory,GroupPolicy }
+            Import-PSSession $Session -module ActiveDirectory,GroupPolicy
+        }
+        Catch
+        {
+            Throw "Couldn't connect to $Hostname, please confirm the remote computer is on and that you can reach it."
+        }
     }
     elseif($FileServer)
     {
-        Set-ExecutionPolicy Unrestricted -Force
-        $Sessions = New-PSSession -ComputerName $Hostname -Credential $user_credential -Authentication Kerberos
-        Invoke-Command $Session -ScriptBlock { Import-Module smbshare }
-        Import-PSSession $Session -module smbshare
+        Try
+        {
+            Set-ExecutionPolicy Unrestricted -Force
+            $Sessions = New-PSSession -ComputerName $Hostname -Credential $user_credential -Authentication Kerberos
+            Invoke-Command $Session -ScriptBlock { Import-Module smbshare }
+            Import-PSSession $Session -module smbshare
+        }
+        Catch
+        {
+            Throw "Couldn't connect to $Hostname, please confirm the remote computer is on and that you can reach it."
+        }
     }
     elseif($Office365)
     {
-        $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://$Hostname/powershell-liveid/ `
-        -Credential $user_credential -Authentication Basic -AllowRedirection
-        Import-PSSession $Session -DisableNameChecking
+        Try
+        {
+            $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://$Hostname/powershell-liveid/ `
+            -Credential $user_credential -Authentication Basic -AllowRedirection
+            Import-PSSession $Session -DisableNameChecking
+        } 
+        Catch
+        {
+            Throw "Couldn't connect to $Hostname, please confirm the remote computer is on and that you can reach it."
+        }
     }
     else
     {
