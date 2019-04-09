@@ -59,12 +59,24 @@ Function Connect-RemoteServer
         )]
         [string]$Hostname,
         [Parameter(
-            ParameterSetName='ServerType',
-            Mandatory=$True
+            ParameterSetName='DomainController',
+            Mandatory=$False
         )]
         [switch]$DomainController,
+        [Parameter(
+            ParameterSetName='Exchange',
+            Mandatory=$False
+        )]
         [switch]$Exchange,
+        [Parameter(
+            ParameterSetName='FileServer',
+            Mandatory=$False
+        )]
         [switch]$FileServer,
+        [Parameter(
+            ParameterSetName='Office365',
+            Mandatory=$False
+        )]
         [switch]$Office365
     )
 
