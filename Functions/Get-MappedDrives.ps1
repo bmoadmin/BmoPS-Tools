@@ -62,7 +62,7 @@ Function Get-MappedDrives
                 }
                 Catch
                 {
-                    Throw "Couldn't connect to $computer. Please make sure the remote PC is on and try again."
+                    Write-Error "Couldn't connect to $computer. Please make sure the remote PC is on and try again."
                 }
             }
         }
