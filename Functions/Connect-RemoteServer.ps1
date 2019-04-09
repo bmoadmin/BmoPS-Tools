@@ -1,4 +1,4 @@
-Function ConnectTo-RemoteServer
+Function Connect-RemoteServer
 {
     <#
         .SYNOPSIS
@@ -23,27 +23,27 @@ Function ConnectTo-RemoteServer
           This parameter tells the script that the remote server is Exchange Online and to connect to the powershell liveid.
 
         .EXAMPLE
-          ConnectTo-RemoteServer -Hostname exchange.bigcorp.local -Exchange
+          Connect-RemoteServer -Hostname exchange.bigcorp.local -Exchange
 
           Start a remote PS Session with the server named exchange.bigcorp.local and load the remote Exchange DB. 
 
         .EXAMPLE
-          ConnectTo-RemoteServer -Hostname pdc.bigcorp.local -DomainController
+          Connect-RemoteServer -Hostname pdc.bigcorp.local -DomainController
 
           Start a remote PS Session with the server named pdc.bigcorp.local and load the ActiveDirectory and GroupPolicy modules.
 
         .EXAMPLE
-          ConnectTo-RemoteServer -Hostname filesrv.bigcorp.local -FileServer
+          Connect-RemoteServer -Hostname filesrv.bigcorp.local -FileServer
 
           Start a remote PS Session with the server named filesrv.bigcorp.local and load the smbshare powershell module
 
         .EXAMPLE
-          ConnectTo-RemoteServer -Hostname outlook.office365.com -Office365
+          Connect-RemoteServer -Hostname outlook.office365.com -Office365
 
           Start a remote PS Session with exchange online.        
 
         .NOTES
-          NAME    : ConnectTo-RemoteServer
+          NAME    : Connect-RemoteServer
           AUTHOR  : BMO
           EMAIL   : brandonseahorse@gmail.com
           GITHUB  : github.com/Bmo1992
