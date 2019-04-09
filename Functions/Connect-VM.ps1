@@ -58,11 +58,25 @@ Function Connect-VM
     {
         if($Hostname)
         {
-            vmconnect.exe $Hostname $VM
+            Try
+            {
+                vmconnect.exe $Hostname $VM
+            }
+            Catch
+            {
+                Write-Error "Couldn't connect to $VM"
+            }
         }
         else
         {
-            vmconnect.exe $(hostname) $VM
+            Try
+            {
+                vmconnect.exe $(hostname) $VM
+            }
+            Catch
+            {
+                Write-Error "Couldn't connect to $VM"
+            }
         }
     }
 }
