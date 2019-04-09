@@ -56,7 +56,7 @@ Function Get-LastLogon
             }
             Catch
             {
-                Throw "Can't connect to $computer, please confirm it's on and try again."
+                Write-Error "Can't connect to $computer, please confirm it's on and try again."
             }
         }
     }
