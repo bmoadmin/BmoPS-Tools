@@ -54,16 +54,16 @@ Function Get-MappedDrives
     {
         if($ComputerName)
         {
-            Try
+            ForEach($computer in $ComputerName)
             {
-                ForEach($computer in $ComputerName)
+                Try
                 {
                     Get-WmiObject Win32_MappedLogicalDisk -ComputerName $computer | Select name,providername
                 }
-            }
-            Catch
-            {
-                Throw "Couldn't connect to $ComputerName. Please make sure the remote PC is on and try again."
+                Catch
+                {
+                    Throw "Couldn't connect to $computer. Please make sure the remote PC is on and try again."
+                }
             }
         }
         else
@@ -75,16 +75,16 @@ Function Get-MappedDrives
     {
         if($ComputerName)
         {
-            Try
+            ForEach($computer in $ComputerName)
             {
-                ForEach($computer in $ComputerName)
+                Try
                 {
                     Get-WmiObect Win32_MappedLogicalDisk -ComputerName $computer
                 }
-            }
-            Catch
-            {
-                Throw "Couldn't connect to $ComputerName. Please make sure the remote PC is on and try again."
+                Catch
+                {
+                    Throw "Couldn't connect to $computer. Please make sure the remote PC is on and try again."
+                }
             }
         }
         else
