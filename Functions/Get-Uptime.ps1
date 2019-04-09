@@ -56,7 +56,7 @@ Function Get-Uptime
             {
             Catch
             {
-                Write-Host "Couldn't connect to $computer. Please confirm it's on an try again."
+                Write-Error "Couldn't connect to $computer. Please confirm it's on an try again."
             }
         }
     }
