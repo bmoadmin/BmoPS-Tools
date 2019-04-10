@@ -79,7 +79,7 @@ Function Get-MappedDrives
             {
                 Try
                 {
-                    Get-WmiObect Win32_MappedLogicalDisk -ComputerName $computer
+                    Get-WmiObject Win32_MappedLogicalDisk -ComputerName $computer
                 }
                 Catch
                 {
