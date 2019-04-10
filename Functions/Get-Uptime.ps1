@@ -48,10 +48,43 @@ Function Get-Uptime
             {
                 if(Test-Connection -ComputerName $computer -Count 1 -ErrorAction SilentlyContinue)
                 {
-                    Write-Host $computer
                     $(Get-Date) - `
                     $((Get-CimInstance -ClassName Win32_OperatingSystem -Property * -ComputerName $computer).LastBootUpTime) | `
-                    Select Days,Hours,Minutes,Seconds
+                    Select @{
+                            Label='Computer';
+                            Expression=
+                            {
+                                $computer
+                            }
+                        },
+                        @{
+                            Label='Days';
+                            Expression=
+                            {
+                                $_.Days
+                            } 
+                        },
+                        @{
+                            Label='Hours';
+                            Expression=
+                            {
+                                $_.Hours
+                             }
+                        },
+                        @{
+                            Label='Minutes';
+                            Expression=
+                            {
+                                $_.Minutes
+                            } 
+                        },
+                        @{
+                            Label='Seconds';
+                            Expression=
+                            {
+                                $_.Seconds
+                            }
+                        }
                 }
             }
             Catch
