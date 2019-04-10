@@ -29,14 +29,16 @@ The following are the commands available in the module.
 #### Connect-RemoteServer
 
 ```powershell
-Connect-RemoteServer
+Connect-RemoteServer -DomainController -Hostname DC01
 ```
+Starts a PS remote session with a specific server and loads the appropriate modules from that remote session based on the server's role.
 
 #### Connect-VM
 
 ```powershell
-Connect-VM
+Connect-VM -VMName vm01 
 ```
+Connect to the console of one or more Hyper-V vm's.  The VM can be on the local Hyper-V host or a remote host. Remote hosts can be spcified with the -Hostname argument. In order to run this command the Hyper-V role must be installed on the machine its being run from.
 
 #### Disable-User
 
@@ -45,8 +47,17 @@ Disable-User
 ```
 #### Get-MappedDrive
 
+Returns information about all the mapped drives on the local or a remote computer. The -Simple switch will only return the assigned drive letter and UNC path to the file share.
+
 ```powershell
-Get-MappedDrive
+Get-MappedDrive -ComputerName desktop01 -Simple
+```
+```text
+name providername
+---- ------------
+F:   \\filesrv01\finance
+H:   \\filesrv01\HumanResources
+S:   \\filesrv01\Sales
 ```
 
 #### Get-OldComputer
