@@ -74,6 +74,27 @@ Get-OldUser
 
 #### Get-Uptime
 
+Returns the uptime of one or more remote computers. By default it will pull the uptime of the local computer.
+
 ```powershell
-Get-Uptime
+Get-Uptime -ComputerName desktop01,desktop02,desktop03
+```
+```text
+Computer : desktop01
+Days     : 20
+Hours    : 3
+Minutes  : 18
+Seconds  : 5
+
+Computer : desktop02
+Days     : 5
+Hours    : 20
+Minutes  : 33
+Seconds  : 7
+
+Computer : desktop03
+Days     : 0
+Hours    : 5
+Minutes  : 45
+Seconds  : 33
 ```
