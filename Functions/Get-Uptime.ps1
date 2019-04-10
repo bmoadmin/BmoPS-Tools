@@ -53,7 +53,7 @@ Function Get-Uptime
                     $((Get-CimInstance -ClassName Win32_OperatingSystem -Property * -ComputerName $computer).LastBootUpTime) | `
                     Select Days,Hours,Minutes,Seconds
                 }
-            {
+            }
             Catch
             {
                 Write-Error "Couldn't connect to $computer. Please confirm it's on an try again."
