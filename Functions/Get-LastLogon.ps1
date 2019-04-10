@@ -49,9 +49,26 @@ Function Get-LastLogon
             {
                 if(Test-Connection -ComputerName $computer -Count 1 -ErrorAction SilentlyContinue)
                 {
-                    Write-Host $computer
                     Get-ChildItem "\\$computer\c$\Users" -ErrorAction SilentlyContinue | Sort LastWriteTime -Descending | `
-                    Select Name,LastWriteTime
+                    Select @{
+                            Label='Name';
+                            Expression={
+                                $_.Name
+                            }
+                        },
+                        @{
+                            Label='LastLogon';
+                            Expression={
+                                $_.LastWriteTime
+                            }
+                        },
+                        @{
+                            Label='Computer';
+                            Expression={
+                                $computer
+                            }
+                        }  
+                    }
                 }
             }
             Catch
