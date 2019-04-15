@@ -15,6 +15,7 @@ BmoPS-Tools is a PowerShell module full of scripts I've written to simplify many
     - [Get-MappedDrives](#Get-MappedDrives)
     - [Get-OldComputer](#Get-OldComputer)
     - [Get-OldUser](#Get-OldUser)
+    - [Get-PowerPlan](#Get-PowerPlan)
     - [Get-RDPState](#Get-RDPState)
     - [Get-UACState](#Get-UACState)
     - [Get-Uptime](#Get-Uptime)
@@ -77,6 +78,22 @@ Get-OldComputer
 
 ```powershell
 Get-OldUser
+```
+
+#### Get-PowerPlan
+
+Retrieve the Power Plans from the local computer.
+
+```powershell
+Get-PowerPlan
+```
+```text
+Caption        :
+Description    : Automatically balances performance with energy consumption on capable hardware.
+ElementName    : Balanced
+InstanceID     : Microsoft:PowerPlan\{44444444-4444-4444-444444444444}
+IsActive       : True
+PSComputerName :
 ```
 
 #### Get-Uptime
