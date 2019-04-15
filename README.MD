@@ -6,13 +6,20 @@ BmoPS-Tools is a PowerShell module full of scripts I've written to simplify many
 - [Usage](#usage)
   - [Installation](#installation)
   - [Commands](#commands)
+    - [Add-AutoUser](#Add-AutoUser)
+    - [Connect-LocalExchange](#Connect-LocalExchange)
     - [Connect-RemoteServer](#Connect-RemoteServer)
     - [Connect-VM](#Connect-VM)
     - [Disable-User](#Disable-User)
+    - [Get-LastLogon](#Get-LastLogon)
     - [Get-MappedDrives](#Get-MappedDrives)
     - [Get-OldComputer](#Get-OldComputer)
     - [Get-OldUser](#Get-OldUser)
+    - [Get-RDPState](#Get-RDPState)
+    - [Get-UACState](#Get-UACState)
     - [Get-Uptime](#Get-Uptime)
+    - [Get-WindowsVersion](#Get-WindowsVersion)
+    - [Remove-Printers](#Remove-Printers)
 
 ## Usage
 
