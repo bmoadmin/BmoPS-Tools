@@ -72,7 +72,6 @@ Function Get-LastLogon
                             }
                         }
                     }
-                }
             }
             Catch
             {
