@@ -90,7 +90,7 @@ Function Connect-RemoteServer
         {
             $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri http://$Hostname/PowerShell/ `
             -Credential $user_credential -Authentication Kerberos
-            Import-PSSession $Session
+            Import-Module (Import-PSSession $Session -AllowClober) -Global
         }
         Catch
         {
@@ -104,7 +104,7 @@ Function Connect-RemoteServer
         {
             $Session = New-PSSession -ComputerName $Hostname -Credential $user_credential -Authentication Kerberos
             Invoke-Command $Session -ScriptBlock { Import-Module ActiveDirectory,GroupPolicy }
-            Import-PSSession $Session -module ActiveDirectory,GroupPolicy
+            Import-Module (Import-PSSession $Session -module ActiveDirectory,GroupPolicy -AllowClobber) -Global
         }
         Catch
         {
@@ -118,7 +118,7 @@ Function Connect-RemoteServer
             Set-ExecutionPolicy Unrestricted -Force
             $Sessions = New-PSSession -ComputerName $Hostname -Credential $user_credential -Authentication Kerberos
             Invoke-Command $Session -ScriptBlock { Import-Module smbshare }
-            Import-PSSession $Session -module smbshare
+            Import-Module (Import-PSSession $Session -module smbshare -AllowClobber) -Global
         }
         Catch
         {
