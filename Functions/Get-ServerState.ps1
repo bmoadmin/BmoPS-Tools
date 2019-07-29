@@ -48,7 +48,6 @@ Param
 ######################
 
 $offline_computers = @()
-$Subject = "The Following Servers are Down: "
 
 
 ##########
@@ -99,6 +98,7 @@ ForEach($computer in $ComputerName)
 # to improve the readability of the email message.
 if($offline_computers.count -gt 0)
 {
+    $Subject = "The Following Servers are Down $offline_computers"
     $Body = "Unable to reach the following servers, please assign to the appropriate resource for investigation: `n `n $(ForEach($server in $offline_computers)
     {
         Write-Output "$server `n"
